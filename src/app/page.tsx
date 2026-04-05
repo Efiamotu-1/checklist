@@ -299,7 +299,7 @@ export default function Home() {
         <section className="mb-12 flex flex-col gap-4">
           <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
             <span className="text-[10px] font-black text-muted uppercase tracking-widest mr-2 shrink-0">Status:</span>
-            {(["all", "pending", "halfway", "completed"] as const).map((status) => (
+            {(["all", "halfway", "completed"] as const).map((status) => (
               <button
                 key={status}
                 onClick={() => setFilterStatus(status)}
@@ -331,13 +331,13 @@ export default function Home() {
             
             <div className="h-6 w-[1px] bg-border mx-1 shrink-0" />
             
-            <div className="flex items-center gap-2 bg-surface border border-border rounded-full px-3 py-1.5 shrink-0 group focus-within:border-accent transition-colors">
+            <div className="flex items-center gap-2 bg-surface border border-border rounded-full px-4 py-2 shrink-0 group focus-within:border-accent transition-all hover:border-accent cursor-pointer">
               <span className="text-[10px] font-bold text-muted uppercase tracking-wider">On:</span>
               <input 
                 type="date"
                 value={filterDate !== "all" && filterDate !== "today" ? filterDate : ""}
                 onChange={(e) => setFilterDate(e.target.value)}
-                className="bg-transparent border-none text-[11px] font-bold text-foreground focus:ring-0 p-0 h-4 leading-none"
+                className="bg-transparent border-none text-[12px] font-bold text-foreground focus:ring-0 p-0 h-6 leading-none cursor-pointer"
               />
             </div>
           </div>

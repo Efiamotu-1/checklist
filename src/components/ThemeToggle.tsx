@@ -14,7 +14,7 @@ export function ThemeToggle() {
   }, []);
 
   if (!mounted) {
-    return <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-zinc-900 animate-pulse" />;
+    return <div className="w-10 h-10 rounded-xl bg-surface/50 border border-border animate-pulse" />;
   }
 
   return (

@@ -143,7 +143,7 @@ export default function TaskCard({ task, onUpdate, onDelete, onClick }: TaskCard
           e.stopPropagation();
           onDelete(task.id);
         }}
-        className="shrink-0 p-3 text-muted hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 hover:rotate-6 shadow-sm"
+        className="shrink-0 p-3 text-muted hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-2xl opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 hover:rotate-6 shadow-sm"
       >
         <HiTrash size={20} />
       </button>
