@@ -8,15 +8,17 @@ export function calculateTaskPriority(task: Task): TaskPriority {
 
   if (task.status === 'completed') return 'low';
 
-  // Urgent if overdue by 0-2 days
-  if (diffDays > 0 && diffDays < 3) {
-    return 'urgent';
-  }
-  
-  // Critical if overdue by 3+ days
-  if (diffDays >= 3) {
-    return 'critical';
-  }
+  // Overdue logic (The Alarmist state)
+  if (diffDays >= 3) return 'critical';
+  if (diffDays > 0) return 'urgent';
+
+  // Deadline Proximity logic (Tasks due within 48 hours)
+  if (diffDays >= -2 && diffDays <= 0) return 'urgent';
+
+  // If it's a future task, we return 'medium' for UI badges 
+  // to avoid alarmist red/orange badges for tasks months away.
+  // We only respect 'high' if it's within the next 7 days.
+  if (diffDays < -7) return 'medium';
 
   return task.priority;
 }

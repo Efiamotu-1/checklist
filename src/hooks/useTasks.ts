@@ -28,11 +28,20 @@ export function useAddTask() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ title, due_date, user_id }: any) => {
-      console.log("Adding task for user:", user_id, { title, due_date });
+    mutationFn: async ({ title, due_date, user_id, phase, week, description }: any) => {
+      console.log("Adding task for user:", user_id, { title, due_date, phase, week });
       const { data, error } = await supabase
         .from("tasks")
-        .insert({ title, due_date, user_id, status: "pending", priority: "medium" })
+        .insert({ 
+          title, 
+          due_date, 
+          user_id, 
+          phase, 
+          week, 
+          description,
+          status: "pending", 
+          priority: "medium" 
+        })
         .select()
         .single();
       if (error) {

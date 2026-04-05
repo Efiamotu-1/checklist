@@ -23,14 +23,32 @@ export default function TaskModal({ task, onClose }: TaskModalProps) {
           <HiXMark className="text-xl" />
         </button>
 
-        <div className="flex items-center gap-3 mb-8">
+        <div className="flex items-center gap-3 mb-4">
           <HiShieldCheck className="text-3xl text-accent" />
-          <span className="text-xs font-black uppercase tracking-[0.2em] text-muted">Task Intelligence</span>
+          <div className="flex flex-col">
+            <span className="text-xs font-black uppercase tracking-[0.2em] text-muted">Task Intelligence</span>
+            {(task.phase || task.week) && (
+              <span className="text-[10px] font-bold text-accent uppercase tracking-wider mt-1">
+                {task.phase} {task.week && `• ${task.week}`}
+              </span>
+            )}
+          </div>
         </div>
 
-        <h2 className="text-2xl md:text-4xl font-black text-foreground mb-8 leading-tight">
+        <h2 className="text-2xl md:text-4xl font-black text-foreground mb-6 leading-tight">
           {task.title}
         </h2>
+
+        {task.description && (
+          <div className="mb-8">
+            <span className="text-[10px] font-black uppercase tracking-widest text-muted block mb-3">Execution Notes</span>
+            <div className="bg-background/40 dark:bg-zinc-800/40 rounded-2xl border border-border p-5 max-h-[250px] overflow-y-auto custom-scrollbar">
+              <p className="text-sm md:text-base text-foreground/80 leading-relaxed whitespace-pre-wrap font-medium">
+                {task.description}
+              </p>
+            </div>
+          </div>
+        )}
 
         <div className="flex flex-wrap gap-4 pt-8 border-t border-border">
           <div className="flex flex-col gap-1.5 p-4 bg-background/50 dark:bg-zinc-800/50 rounded-2xl border border-border flex-1 min-w-[200px]">

@@ -44,6 +44,9 @@ export default function Home() {
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [viewMode, setViewMode] = useState<"dashboard" | "roadmap">("dashboard");
+  const [filterPhase, setFilterPhase] = useState<string>("all");
+  const [filterWeek, setFilterWeek] = useState<string>("all");
 
   const { register, handleSubmit } = useForm();
 
@@ -83,6 +86,12 @@ export default function Home() {
     const isStatusMatch = filterStatus === "all" || task.status === filterStatus;
     if (!isStatusMatch) return false;
 
+    const isPhaseMatch = filterPhase === "all" || task.phase === filterPhase;
+    if (!isPhaseMatch) return false;
+
+    const isWeekMatch = filterWeek === "all" || task.week === filterWeek;
+    if (!isWeekMatch) return false;
+
     const dueDate = new Date(task.due_date);
     const dueDateStr = dueDate.toLocaleDateString("en-CA");
     const todayStr = now.toLocaleDateString("en-CA");
@@ -91,25 +100,31 @@ export default function Home() {
     if (filterDate !== "all") return dueDateStr === filterDate;
     
     return true;
-  });
+  }).sort((a, b) => new Date(a.due_date).getTime() - new Date(b.due_date).getTime());
 
   const isDashboardMode = filterStatus === "all" && filterDate === "all";
 
   // Dashboard Categories
   const lingeringTasks = tasks.filter((t: Task) => {
     const dueDate = new Date(t.due_date);
-    return t.status !== "completed" && dueDate < now && dueDate.toDateString() !== now.toDateString();
+    const isPhaseMatch = filterPhase === "all" || t.phase === filterPhase;
+    const isWeekMatch = filterWeek === "all" || t.week === filterWeek;
+    return t.status !== "completed" && dueDate < now && dueDate.toDateString() !== now.toDateString() && isPhaseMatch && isWeekMatch;
   });
 
   const dailyFocusTasks = tasks.filter((t: Task) => {
     const dueDate = new Date(t.due_date);
-    return t.status !== "completed" && dueDate.toDateString() === now.toDateString();
-  });
+    const isPhaseMatch = filterPhase === "all" || t.phase === filterPhase;
+    const isWeekMatch = filterWeek === "all" || t.week === filterWeek;
+    return t.status !== "completed" && dueDate.toDateString() === now.toDateString() && isPhaseMatch && isWeekMatch;
+  }).sort((a, b) => new Date(a.due_date).getTime() - new Date(b.due_date).getTime());
 
   const upcomingTasks = tasks.filter((t: Task) => {
     const dueDate = new Date(t.due_date);
-    return t.status !== "completed" && dueDate > now && dueDate.toDateString() !== now.toDateString();
-  });
+    const isPhaseMatch = filterPhase === "all" || t.phase === filterPhase;
+    const isWeekMatch = filterWeek === "all" || t.week === filterWeek;
+    return t.status !== "completed" && dueDate > now && dueDate.toDateString() !== now.toDateString() && isPhaseMatch && isWeekMatch;
+  }).sort((a, b) => new Date(a.due_date).getTime() - new Date(b.due_date).getTime());
 
   const completedToday = tasks.filter(
     (t: Task) => t.status === "completed" && new Date(t.completed_at || "").toDateString() === now.toDateString()
@@ -245,6 +260,20 @@ export default function Home() {
                </div>
             </div>
             <div className="flex items-center gap-2">
+              <div className="flex bg-surface border border-border p-1 rounded-xl mr-2">
+                <button 
+                  onClick={() => setViewMode("dashboard")}
+                  className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${viewMode === "dashboard" ? "bg-background shadow-sm text-accent" : "text-muted hover:text-foreground"}`}
+                >
+                  Dashboard
+                </button>
+                <button 
+                  onClick={() => setViewMode("roadmap")}
+                  className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${viewMode === "roadmap" ? "bg-background shadow-sm text-accent" : "text-muted hover:text-foreground"}`}
+                >
+                  Roadmap
+                </button>
+              </div>
               <ThemeToggle />
               {isAuthenticated && (
                 <button 
@@ -314,6 +343,55 @@ export default function Home() {
             ))}
           </div>
           <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+            <span className="text-[10px] font-black text-muted uppercase tracking-widest mr-2 shrink-0">Phase:</span>
+            {["all", "PHASE 1", "PHASE 2", "PHASE 3", "PHASE 4"].map((phase) => (
+              <button
+                key={phase}
+                onClick={() => {
+                  setFilterPhase(phase);
+                  setFilterWeek("all");
+                }}
+                className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all border shrink-0 ${
+                  filterPhase === phase
+                    ? "bg-accent border-accent text-white shadow-lg shadow-accent/20"
+                    : "bg-surface text-muted border-border hover:border-accent"
+                }`}
+              >
+                {phase}
+              </button>
+            ))}
+          </div>
+          
+          {filterPhase !== "all" && (
+            <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 animate-in fade-in slide-in-from-top-2">
+              <span className="text-[10px] font-black text-muted uppercase tracking-widest mr-2 shrink-0">Week:</span>
+              <button
+                onClick={() => setFilterWeek("all")}
+                className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all border shrink-0 ${
+                  filterWeek === "all"
+                    ? "bg-accent border-accent text-white shadow-lg shadow-accent/20"
+                    : "bg-surface text-muted border-border hover:border-accent"
+                }`}
+              >
+                ALL WEEKS
+              </button>
+              {Array.from(new Set(tasks.filter(t => t.phase === filterPhase && t.week).map(t => t.week as string))).sort().map((week) => (
+                <button
+                  key={week}
+                  onClick={() => setFilterWeek(week)}
+                  className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all border shrink-0 ${
+                    filterWeek === week
+                      ? "bg-accent border-accent text-white shadow-lg shadow-accent/20"
+                      : "bg-surface text-muted border-border hover:border-accent"
+                  }`}
+                >
+                  {week}
+                </button>
+              ))}
+            </div>
+          )}
+
+          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
             <span className="text-[10px] font-black text-muted uppercase tracking-widest mr-2 shrink-0">Dates:</span>
             {(["all", "today"] as const).map((date) => (
               <button
@@ -344,7 +422,42 @@ export default function Home() {
         </section>
 
         <div className="space-y-12 md:space-y-20">
-          {isDashboardMode ? (
+          {viewMode === "roadmap" ? (
+             <section className="space-y-12">
+               {/* Roadmap View Logic */}
+               {Array.from(new Set(tasks.map(t => t.phase || 'Uncategorized'))).sort().map(phase => {
+                 const phaseTasks = tasks.filter(t => (t.phase || 'Uncategorized') === phase);
+                 const weeks = Array.from(new Set(phaseTasks.map(t => t.week || 'No Week'))).sort();
+                 
+                 return (
+                   <div key={phase} className="space-y-8">
+                      <div className="flex items-center gap-4">
+                        <h2 className="text-2xl md:text-3xl font-black text-foreground whitespace-nowrap">{phase}</h2>
+                        <div className="h-[1px] bg-border w-full" />
+                      </div>
+                      
+                      <div className="space-y-10">
+                        {weeks.map(week => {
+                          const weekTasks = phaseTasks.filter(t => (t.week || 'No Week') === week);
+                          return (
+                            <div key={week} className="space-y-4 ml-2 md:ml-6">
+                              <h3 className="text-xs font-black uppercase tracking-[0.3em] text-muted flex items-center gap-2">
+                                <span className="w-2 h-2 bg-accent rounded-full" /> {week}
+                              </h3>
+                              <div className="grid gap-4">
+                                {weekTasks.map((task: Task) => (
+                                  <TaskCard key={task.id} task={task} onUpdate={updateTask} onDelete={deleteTask} onClick={() => setSelectedTask(task)} />
+                                ))}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                   </div>
+                 );
+               })}
+             </section>
+          ) : isDashboardMode ? (
             <>
               {/* Top Priority: Lingering Concerns */}
               {lingeringTasks.length > 0 && (

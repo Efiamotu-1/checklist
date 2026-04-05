@@ -5,6 +5,8 @@ export interface Task {
   id: string;
   title: string;
   description?: string;
+  phase?: string;
+  week?: string;
   status: TaskStatus;
   priority: TaskPriority;
   created_at: string;

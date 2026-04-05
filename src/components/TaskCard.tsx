@@ -66,6 +66,18 @@ export default function TaskCard({ task, onUpdate, onDelete, onClick }: TaskCard
         </button>
 
         <div className="flex flex-col min-w-0 pr-4">
+          {(task.phase || task.week) && (
+            <div className={`flex items-center gap-1.5 mb-1 ${task.status === "completed" ? "opacity-40" : ""}`}>
+              <span className="text-[9px] font-black bg-accent/10 dark:bg-accent/20 text-accent px-2 py-0.5 rounded-full uppercase tracking-widest border border-accent/20">
+                {task.phase || "Task"}
+              </span>
+              {task.week && (
+                <span className="text-[9px] font-black text-muted uppercase tracking-widest">
+                  {task.week}
+                </span>
+              )}
+            </div>
+          )}
           <span
             className={`text-sm md:text-base font-bold truncate text-foreground transition-all ${
               task.status === "completed" ? "line-through text-muted/60" : ""
