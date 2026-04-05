@@ -84,8 +84,8 @@ export default function Home() {
     if (!isStatusMatch) return false;
 
     const dueDate = new Date(task.due_date);
-    const dueDateStr = dueDate.toISOString().split('T')[0];
-    const todayStr = now.toISOString().split('T')[0];
+    const dueDateStr = dueDate.toLocaleDateString("en-CA");
+    const todayStr = now.toLocaleDateString("en-CA");
 
     if (filterDate === "today") return dueDateStr === todayStr;
     if (filterDate !== "all") return dueDateStr === filterDate;
@@ -214,7 +214,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-background transition-colors duration-500 overflow-x-hidden p-4 md:p-12 text-foreground">
       <div className="max-w-4xl mx-auto py-6 md:py-12">
-        <header className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-slate-200 dark:border-slate-800 pb-12">
+        <header className="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-border pb-12">
           <div>
             <div className="flex items-center gap-3 mb-2">
               <HiShieldCheck className="text-accent text-2xl md:text-3xl" />
@@ -231,7 +231,7 @@ export default function Home() {
           </div>
           
           <div className="flex flex-col md:flex-row items-center gap-4">
-            <div className="flex items-center justify-between md:justify-start gap-4 md:gap-6 bg-surface p-4 md:p-6 rounded-[1.5rem] md:rounded-[2rem] border border-border shadow-xl shadow-slate-200/20 dark:shadow-none backdrop-blur-xl">
+            <div className="flex items-center justify-between md:justify-start gap-4 md:gap-6 bg-surface p-4 md:p-6 rounded-[1.5rem] md:rounded-[2rem] border border-border shadow-xl shadow-accent/5 dark:shadow-none backdrop-blur-xl">
                <div className="flex flex-col">
                   <span className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.2em] text-muted mb-1">
                     Integrity Rating
@@ -273,21 +273,21 @@ export default function Home() {
               />
               <HiPlus className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-muted text-xl md:text-2xl" />
             </div>
-            <div className="flex flex-col sm:flex-row sm:items-center gap-3 border-t border-slate-100 dark:border-slate-800 pt-3 md:pt-4 px-1 md:px-2">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 border-t border-border pt-3 md:pt-4 px-1 md:px-2">
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Due At:</span>
+                <span className="text-[10px] font-bold text-muted uppercase tracking-wider">Due At:</span>
                 <input
                   type="datetime-local"
                   value={dueDateTime}
                   min={new Date().toLocaleDateString('sv') + 'T' + new Date().toLocaleTimeString('sv').slice(0, 5)}
                   onChange={(e) => setDueDateTime(e.target.value)}
-                  className="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg md:rounded-xl px-2 py-1 text-[11px] md:text-xs font-semibold text-slate-700 dark:text-slate-300 focus:outline-violet-500"
+                  className="bg-background dark:bg-zinc-800/50 border border-border dark:border-zinc-700 rounded-lg md:rounded-xl px-2 py-1 text-[11px] md:text-xs font-semibold text-foreground dark:text-zinc-300 focus:outline-accent"
                 />
               </div>
               <div className="flex-1" />
               <button
                 onClick={addTask}
-                className="w-full sm:w-auto bg-violet-600 hover:bg-violet-700 text-white px-6 py-2 rounded-xl text-sm font-bold transition-all shadow-lg shadow-violet-500/20"
+                className="w-full sm:w-auto bg-accent hover:opacity-90 text-white px-6 py-2 rounded-xl text-sm font-bold transition-all shadow-lg shadow-accent/20"
               >
                 ADD TASK
               </button>
@@ -298,15 +298,15 @@ export default function Home() {
         {/* Filter Bar */}
         <section className="mb-12 flex flex-col gap-4">
           <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
-            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mr-2 shrink-0">Status:</span>
+            <span className="text-[10px] font-black text-muted uppercase tracking-widest mr-2 shrink-0">Status:</span>
             {(["all", "pending", "halfway", "completed"] as const).map((status) => (
               <button
                 key={status}
                 onClick={() => setFilterStatus(status)}
                 className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all border shrink-0 ${
                   filterStatus === status
-                    ? "bg-violet-600 border-violet-600 text-white shadow-lg shadow-violet-500/20"
-                    : "bg-white dark:bg-slate-900/50 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:border-violet-400"
+                    ? "bg-accent border-accent text-white shadow-lg shadow-accent/20"
+                    : "bg-surface text-muted border-border hover:border-accent"
                 }`}
               >
                 {status}
@@ -321,7 +321,7 @@ export default function Home() {
                 onClick={() => setFilterDate(date)}
                 className={`px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider transition-all border shrink-0 ${
                   filterDate === date
-                    ? "bg-foreground text-background border-foreground shadow-lg shadow-slate-500/20"
+                    ? "bg-foreground text-background border-foreground shadow-lg shadow-accent/10"
                     : "bg-surface text-muted border-border hover:border-accent"
                 }`}
               >
@@ -381,7 +381,7 @@ export default function Home() {
                       <TaskCard key={task.id} task={task} onUpdate={updateTask} onDelete={deleteTask} onClick={() => setSelectedTask(task)} />
                     ))
                   ) : (
-                    <div className="p-12 text-center bg-slate-100/30 dark:bg-slate-900/10 rounded-[2rem] border border-dashed border-slate-200 dark:border-slate-800 text-slate-400 font-medium">
+                    <div className="p-12 text-center bg-surface/50 rounded-[2rem] border border-dashed border-border text-muted font-medium">
                       Your daily focus is clear. Set a mission for today.
                     </div>
                   )}
@@ -423,10 +423,10 @@ export default function Home() {
 
               {/* Longevity: History */}
               {completedHistory.length > 0 && (
-                <section className="pt-4 border-t border-slate-200 dark:border-slate-800">
+                <section className="pt-4 border-t border-border">
                   <button 
                     onClick={() => setShowHistory(!showHistory)}
-                    className="text-[10px] font-black text-slate-400 hover:text-violet-500 uppercase tracking-[0.2em] transition-all flex items-center gap-2"
+                    className="text-[10px] font-black text-muted hover:text-accent uppercase tracking-[0.2em] transition-all flex items-center gap-2"
                   >
                     {showHistory ? "Hide Historical Performance" : `Show History (${completedHistory.length})`}
                   </button>
@@ -457,7 +457,7 @@ export default function Home() {
                     <TaskCard key={task.id} task={task} onUpdate={updateTask} onDelete={deleteTask} onClick={() => setSelectedTask(task)} />
                   ))
                 ) : (
-                  <div className="p-20 text-center text-slate-400 bg-slate-100/30 dark:bg-slate-900/10 rounded-[2rem] border border-dashed border-slate-200 dark:border-slate-800">
+                  <div className="p-20 text-center text-muted bg-surface/50 rounded-[2rem] border border-dashed border-border">
                     No tasks found matching your filters.
                   </div>
                 )}

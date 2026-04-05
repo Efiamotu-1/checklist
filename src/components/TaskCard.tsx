@@ -46,7 +46,7 @@ export default function TaskCard({ task, onUpdate, onDelete, onClick }: TaskCard
       onClick={onClick}
       className={`group flex items-center justify-between p-3 md:p-4 rounded-[1.5rem] md:rounded-[2rem] border transition-all duration-500 cursor-pointer ${
         task.status === "completed"
-          ? "bg-slate-500/5 dark:bg-zinc-900/40 border-border/40 opacity-60 grayscale backdrop-blur-sm shadow-none"
+          ? "bg-muted/5 dark:bg-zinc-900/40 border-border/40 opacity-60 grayscale backdrop-blur-sm shadow-none"
           : isCritical
           ? "bg-red-500/5 dark:bg-red-950/10 border-red-500/30 dark:border-red-900/40 shadow-xl shadow-red-500/5 ring-1 ring-red-500/20"
           : "bg-surface dark:bg-zinc-900/60 border-border dark:border-zinc-800 shadow-md hover:border-accent dark:hover:border-accent/50 hover:shadow-xl hover:shadow-accent/5 backdrop-blur-md"
